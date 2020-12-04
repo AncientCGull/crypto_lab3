@@ -36,38 +36,23 @@ def getPrimeBase(bits)
 	return prime
 end
 
-def reverse (a, mod)
-	i = 0
-	begin
-		rev = a ** i % mod
-		i+=1
-	end while not (rev * a % mod).equal?(1)
-	return rev
-end
-
 def Lejandr(a, q)
-	if a == 1
-		return 1
-	end
+	a == 1 ? (return 1) : {}
 
-	if a % 2 == 1
-		return (-1)**((q-1)*(a-1)/4) * (q%a)/a
-	end
+	puts a
+	puts q
 
-	return (-1)**((q**2-1)/8) * (a/2)/q
+	return a.odd? ? ((-1)**((q-1)*(a-1)/4) * (q%a)/a) : ((-1)**((q**2-1)/8) * (a/2)/q)
 end
 
 
-#dotP = Dot.new(Curve::X, Curve::Y, Curve::A, Curve::M)
-#puts "#{dotP.write()} + #{dotP.write()} = #{(dotP+dotP).write()}"
-#puts "#{dotP.write()} * 2 = #{dotP.double().write()}"
+dot = Dot.new(Curve::X, Curve::Y, Curve::A, Curve::M)
 
-#puts (dotP + dotP).write() == dotP.double().write()
+k = rand(Curve::M-1)
+puts k.to_s(2).length()
 
-#dotP.doubleEC(Curve::X, Curve::Y, Curve::A, Curve::M)
+#bench = Benchmark.measure { puts (dot * k).write()}
+#puts bench.real()
 
-dot = Dot.new(19, 11, 26, 31)
-puts (Dot.new(10, 11, 15, 23) + Dot.new(14, 4, 15, 23)).write
-puts (dot + dot).write()
-puts dot.double().write()
-
+lej = Lejandr(Curve::Q, Curve::M)
+puts lej

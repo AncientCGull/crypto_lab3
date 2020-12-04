@@ -26,30 +26,47 @@ class Dot
 		return "(#{x}, #{y})"
 	end
 
-	def sumEC (qx, qy, mod)
-		temp = reverse(@x - qx, m)
-		l = ((@y - qy) * temp) % m
-		c = (@y - l * @x) % m
-		qPx = (l * l - @x - qx) % m
-		qPy = (-1 * (l * qPx + c)) % m
-		return Dot.new(qPx, qPy, m)
-	end
-
 	def +(dotQ)
-		temp = reverse(@x - dotQ.x, m)
-		l = ((@y - dotQ.y) * temp) % m
-		c = (@y - l * @x) % m
+		dotQ == INF ? (return self) :
+
+		self == INF ? (return dotQ) :
+
+		if @x == dotQ.x
+			(@y + dotQ.y) % @m == 0 ? (return INF) : (return self.double())
+		end
+
+		l = ((@y - dotQ.y) * reverse(@x - dotQ.x, m)) % m
+		c = (@y - l * @x) % @m
 		qPx = (l * l - @x - dotQ.x) % m
-		qPy = (-1 * (l * qPx + c)) % m
+		qPy = (- (l * qPx + c)) % m
 		return Dot.new(qPx, qPy, a, m)
 	end
 
 	def double()
-		temp = reverse(2*@y, @m)
-		l = ((3 * @x * @x + @a) * temp) % @m
-		c = (@y - l * @x) % @m
+		l = ((3 * @x * @x + @a) * reverse(2*@y, @m)) % @m
 		x2 = (l * l - 2 * @x) % @m
-		y2 = (-(l * x2 + c)) % @m
+		y2 = (l * (@x - x2) - @y) % @m
 		return Dot.new(x2, y2, a, m)
 	end
+
+	def *(q)
+		q = q.to_s(2).reverse()
+		temp = self
+		res = 0
+		i = q.length() - 1
+		while i >= 0 do
+			if q[i] == "1"
+				for j in (1..i)
+					temp = temp.double()
+				end
+				res == 0 ? res = temp : res = res + temp
+				temp = self
+			end
+			i -= 1
+		end
+		return res
+	end
 end
+
+Inf = Float::INFINITY
+INF = Dot.new(Inf, Inf, Inf, Inf)
