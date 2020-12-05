@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'digest'
 require_relative 'dot.rb'
 require_relative 'curve.rb'
 include Curve
@@ -36,23 +37,45 @@ def getPrimeBase(bits)
 	return prime
 end
 
-def Lejandr(a, q)
-	a == 1 ? (return 1) : {}
+def idGen()
+	return (getPrimeBase(64)).to_s(2)
+end
 
-	puts a
-	puts q
-
-	return a.odd? ? ((-1)**((q-1)*(a-1)/4) * (q%a)/a) : ((-1)**((q**2-1)/8) * (a/2)/q)
+def check(id, dotK)
+	return (dotK.isBelong() and (dotK * Curve::H != 0))
 end
 
 
-dot = Dot.new(Curve::X, Curve::Y, Curve::A, Curve::M)
+dotP = Dot.new(Curve::X, Curve::Y, Curve::A, Curve::M)
 
-k = rand(Curve::M-1)
-puts k.to_s(2).length()
+kA = rand(Curve::M-1)
+dotKa = dotP * kA
+puts "kA = #{kA}, KA = #{dotKa.write()}" # 1)
+
+idA = idGen() # 2)
+puts "Отправляем (idA, KA)"
+
+printf "Проверяем... " # 3)
+puts check(idA, dotKa) ? "выполнено" : return
+
+kB = rand(Curve::M-1)
+dotKb = dotP * kB # 4)
+puts "kB = #{kB}, KA = #{dotKb.write()}"
+
+dotQab = dotKb * Curve::H # 5)
+puts "QAB = #{dotQab.write()}"
+
+idB = idGen()
+str = dotQab.pi + idA + idB
+tAB = (Digest::SHA512.hexdigest str).to_i(16).to_s(2) # 6)
+puts "TAB = #{tAB}"
+
+kAB = tAB.slice(0..255)
+mAB = tAB.slice(256..511) #7)
+puts kAB.length() == mAB.length()
 
 #bench = Benchmark.measure { puts (dot * k).write()}
 #puts bench.real()
 
-lej = Lejandr(Curve::Q, Curve::M)
-puts lej
+#lej = Lejandr(Curve::Q, Curve::M)
+#puts lej

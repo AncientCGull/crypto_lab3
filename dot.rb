@@ -1,4 +1,6 @@
 class Dot
+	require_relative 'curve.rb'
+	include Curve
 	attr_reader :x, :y, :a, :m
 
 	def initialize(x, y, a, m)
@@ -15,10 +17,10 @@ class Dot
 	        q = a / b
 	        a, b = b, a % b
 	        u, uu = uu, u - uu*q
-			end
+		end
 	    if u < 0
 	        u += mod * ((u.abs / mod) + 1)
-			end
+		end
 	    return u
 	end
 
@@ -27,9 +29,9 @@ class Dot
 	end
 
 	def +(dotQ)
-		dotQ == INF ? (return self) :
+		dotQ == INF ? (return self) : {}
 
-		self == INF ? (return dotQ) :
+		self == INF ? (return dotQ) : {}
 
 		if @x == dotQ.x
 			(@y + dotQ.y) % @m == 0 ? (return INF) : (return self.double())
@@ -65,6 +67,14 @@ class Dot
 			i -= 1
 		end
 		return res
+	end
+
+	def pi()
+		return @x.to_s(2)
+	end
+
+	def isBelong()
+		return @y.pow(2, m) == ((@x**3 + a*@x + Curve::B) % m) ? true : false
 	end
 end
 
