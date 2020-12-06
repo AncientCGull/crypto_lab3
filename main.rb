@@ -19,6 +19,8 @@ end
 
 
 point_P = Point.new(Curve::X, Curve::Y, Curve::A, Curve::M)
+h2 = idGen
+h3 = idGen
 
 puts "Step 1"
 kA = rand(Curve::M-1)
@@ -72,9 +74,9 @@ d, publicPoint = gost.gen_keys
 aut = gost.sign(str.to_i(2), d)
 #aut = ElGamal::sign(str)
 puts "Подпись -- пара (#{aut[0]}, #{aut[1]})"
-str = point_Kb.pi + point_Ka.pi + idB + idA
-tag = OpenSSL::HMAC.hexdigest("SHA512", mAB, str)
-puts "tag = #{tag}"
+str = h2 + point_Kb.pi + point_Ka.pi + idB + idA
+tagB = OpenSSL::HMAC.hexdigest("SHA512", mAB, str)
+puts "tagB = #{tagB}"
 puts
 
 puts "Step 11"
@@ -92,3 +94,41 @@ puts "Step 13"
 point_Qba = point_Kb * Curve::H * kA
 puts "Q_BA = #{point_Qba.write}"
 puts
+
+puts "Step 14"
+str = point_Qba.pi + idA + idB
+tBA = (Digest::SHA512.hexdigest str).to_i(16).to_s(2)
+puts "T_BA = #{tBA}"
+puts
+
+puts "Step 15"
+kBA = tBA.slice(0..255)
+mBA = tBA.slice(256..511)
+puts "K_AB = #{kBA}"
+puts "M_AB = #{mBA}"
+puts
+
+puts "Step 16"
+str = h2 + point_Kb.pi + point_Ka.pi + idB + idA
+tag_B = OpenSSL::HMAC.hexdigest("SHA512", mBA, str)
+puts "tag_ = #{tag_B}"
+printf "Метки подтверждения ключа... "
+puts tagB == tag_B ? "совпадают" : return
+puts
+
+puts "Step 17"
+str = h3 + point_Ka.pi + point_Kb.pi + idA + idB
+tagA = OpenSSL::HMAC.hexdigest("SHA512", mBA, str)
+puts "tagA = #{tagA}"
+puts
+
+puts "Step 19"
+str = h3 + point_Ka.pi + point_Kb.pi + idA + idB
+tag_A = OpenSSL::HMAC.hexdigest("SHA512", mAB, str)
+puts "tag_A = #{tag_A}"
+printf "Метки подтверждения ключа... "
+puts tagA == tag_A ? "совпадают" : return
+puts 
+
+puts "Выработанный общий ключ:"
+puts kAB == kBA ? kAB : return
