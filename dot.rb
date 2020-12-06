@@ -34,7 +34,7 @@ class Dot
 		self == INF ? (return dotQ) : {}
 
 		if @x == dotQ.x
-			(@y + dotQ.y) % @m == 0 ? (return INF) : (return self.double())
+			(@y + dotQ.y) % @m == 0 ? (return INF) : (return self.double)
 		end
 
 		l = ((@y - dotQ.y) * reverse(@x - dotQ.x, m)) % m
@@ -52,14 +52,14 @@ class Dot
 	end
 
 	def *(q)
-		q = q.to_s(2).reverse()
+		q = q.to_s(2).reverse
 		temp = self
 		res = 0
-		i = q.length() - 1
+		i = q.length - 1
 		while i >= 0 do
 			if q[i] == "1"
 				for j in (1..i)
-					temp = temp.double()
+					temp = temp.double
 				end
 				res == 0 ? res = temp : res = res + temp
 				temp = self

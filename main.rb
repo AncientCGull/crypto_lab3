@@ -50,29 +50,41 @@ dotP = Dot.new(Curve::X, Curve::Y, Curve::A, Curve::M)
 
 kA = rand(Curve::M-1)
 dotKa = dotP * kA
-puts "kA = #{kA}, KA = #{dotKa.write()}" # 1)
+puts "kA = #{kA}" # 1)
+puts "K_A = #{dotKa.write}"
+puts
 
-idA = idGen() # 2)
+idA = idGen # 2)
 puts "Отправляем (idA, KA)"
+puts
 
 printf "Проверяем... " # 3)
 puts check(idA, dotKa) ? "выполнено" : return
+puts
 
 kB = rand(Curve::M-1)
 dotKb = dotP * kB # 4)
-puts "kB = #{kB}, KA = #{dotKb.write()}"
+puts "kB = #{kB}"
+puts "K_A = #{dotKb.write}"
+puts
 
 dotQab = dotKb * Curve::H # 5)
-puts "QAB = #{dotQab.write()}"
+puts "Q_AB = #{dotQab.write}"
+puts
 
-idB = idGen()
+idB = idGen
 str = dotQab.pi + idA + idB
 tAB = (Digest::SHA512.hexdigest str).to_i(16).to_s(2) # 6)
-puts "TAB = #{tAB}"
+puts "T_AB = #{tAB}"
+puts
 
 kAB = tAB.slice(0..255)
 mAB = tAB.slice(256..511) #7)
-puts kAB.length() == mAB.length()
+puts "K_AB = #{kAB}"
+puts "M_AB = #{mAB}"
+puts
+
+str = dotKb.pi + dotKa.pi + idA
 
 #bench = Benchmark.measure { puts (dot * k).write()}
 #puts bench.real()
