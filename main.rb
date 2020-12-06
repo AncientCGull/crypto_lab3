@@ -10,7 +10,8 @@ include ElGamal
 
 def idGen()
 	bits = 64
-	return rand(2**(bits-1)..2**bits-1).to_s(2)
+	return 2.to_s(2)
+	#return rand(2**(bits-1)..2**bits-1).to_s(2)
 end
 
 def check(point_K)
@@ -23,7 +24,8 @@ h2 = idGen
 h3 = idGen
 
 puts "Step 1"
-kA = rand(Curve::M-1)
+#kA = rand(Curve::M-1)
+kA = 2
 point_Ka = point_P * kA
 puts "kA = #{kA}" # 1)
 puts "K_A = #{point_Ka.write}"
@@ -40,10 +42,11 @@ puts check(point_Ka) ? "выполнено" : return
 puts
 
 puts "Step 4"
-kB = rand(Curve::M-1)
+#kB = rand(Curve::M-1)
+kB = 2
 point_Kb = point_P * kB # 4)
 puts "kB = #{kB}"
-puts "K_A = #{point_Kb.write}"
+puts "K_B = #{point_Kb.write}"
 puts
 
 puts "Step 5"
@@ -69,8 +72,12 @@ puts
 
 puts "Step 8"
 str = point_Kb.pi + point_Ka.pi + idA
+puts "str = #{str}"
 gost = DSGOST.new(Curve::M, Curve::A, Curve::Q, Curve::X, Curve::Y)
-d, publicPoint = gost.gen_keys
+#d, publicPoint = gost.gen_keys
+d = 3780063334891565563956103088066170401814736544956500271767337169580539771497267209916385817790681553543988861093556642343924064211897798768666844694767196
+publicPoint = Point.new(677836621899300942818510883110000667447430660322563084791572826753826630018430057080197762494205854865327709722851511476603625268503938220560644866830600, 2750376684056128716923537217869126655086818570696105235320997361359484875145539028594776882955597787248298761008316378685667792702759142083843487249995473, Curve::A, Curve::M)
+puts "d = #{d}; publicPoint = #{publicPoint.write}"
 aut = gost.sign(str.to_i(2), d)
 #aut = ElGamal::sign(str)
 puts "Подпись -- пара (#{aut[0]}, #{aut[1]})"
