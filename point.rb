@@ -1,4 +1,4 @@
-class Dot
+class Point
 	require_relative 'curve.rb'
 	include Curve
 	attr_reader :x, :y, :a, :m
@@ -28,27 +28,27 @@ class Dot
 		return "(#{x}, #{y})"
 	end
 
-	def +(dotQ)
-		dotQ == INF ? (return self) : {}
+	def +(point_Q)
+		point_Q == INF ? (return self) : {}
 
-		self == INF ? (return dotQ) : {}
+		self == INF ? (return point_Q) : {}
 
-		if @x == dotQ.x
-			(@y + dotQ.y) % @m == 0 ? (return INF) : (return self.double)
+		if @x == point_Q.x
+			(@y + point_Q.y) % @m == 0 ? (return INF) : (return self.double)
 		end
 
-		l = ((@y - dotQ.y) * reverse(@x - dotQ.x, m)) % m
+		l = ((@y - point_Q.y) * reverse(@x - point_Q.x, m)) % m
 		c = (@y - l * @x) % @m
-		qPx = (l * l - @x - dotQ.x) % m
+		qPx = (l * l - @x - point_Q.x) % m
 		qPy = (- (l * qPx + c)) % m
-		return Dot.new(qPx, qPy, a, m)
+		return Point.new(qPx, qPy, a, m)
 	end
 
 	def double()
 		l = ((3 * @x * @x + @a) * reverse(2*@y, @m)) % @m
 		x2 = (l * l - 2 * @x) % @m
 		y2 = (l * (@x - x2) - @y) % @m
-		return Dot.new(x2, y2, a, m)
+		return Point.new(x2, y2, a, m)
 	end
 
 	def *(q)
@@ -79,4 +79,4 @@ class Dot
 end
 
 Inf = Float::INFINITY
-INF = Dot.new(Inf, Inf, Inf, Inf)
+INF = Point.new(Inf, Inf, Inf, Inf)
