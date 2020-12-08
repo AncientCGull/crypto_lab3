@@ -51,22 +51,19 @@ class Point
 		return Point.new(x2, y2, a, m)
 	end
 
-	def *(q)
-		q = q.to_s(2).reverse
-		temp = self
-		res = 0
-		i = q.length - 1
-		while i >= 0 do
-			if q[i] == "1"
-				for j in (1..i)
-					temp = temp.double
-				end
-				res == 0 ? res = temp : res = res + temp
-				temp = self
+	def *(other)
+		p_result = Point.new(@x, @y, @a, @m)
+        temp = Point.new(@x, @y, @a, @m)
+        x = other - 1
+        while x != 0 do
+            if x % 2 != 0
+                p_result += temp
+				x -= 1
 			end
-			i -= 1
+            x /= 2
+			temp = temp + temp
 		end
-		return res
+		return p_result
 	end
 
 	def pi()
@@ -74,7 +71,7 @@ class Point
 	end
 
 	def isBelong()
-		return @y.pow(2, m) == ((@x**3 + a*@x + Curve::B) % m) ? true : false
+		return @y.pow(2, m) == ((@x**3 + a*@x + Curve::B) % m)
 	end
 end
 

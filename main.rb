@@ -16,37 +16,41 @@ def check(point_K)
 end
 
 
+def main
+	point_P = Point.new(Curve::X, Curve::Y, Curve::A, Curve::M)
+	h2 = idGen
+	h3 = idGen
 
-point_P = Point.new(Curve::X, Curve::Y, Curve::A, Curve::M)
-h2 = idGen
-h3 = idGen
+	alice = Alice.new(point_P, h2, h3)
+	bob = Bob.new(point_P, h2, h3)
 
-alice = Alice.new(point_P, h2, h3)
-bob = Bob.new(point_P, h2, h3)
+	alice.step1
+	idA, point_Ka = alice.step2_send
 
-alice.step1
-idA, point_Ka = alice.step2_send
+	bob.step3(idA, point_Ka)
+	bob.step4
+	bob.step5
+	bob.step6
+	bob.step7
+	publicPoint = bob.step8
+	idB, cert, point_Kb, aut, tagB = bob.step9_send
 
-bob.step3(idA, point_Ka)
-bob.step4
-bob.step5
-bob.step6
-bob.step7
-publicPoint = bob.step8
-idB, cert, point_Kb, aut, tagB = bob.step9_send
+	alice.step10(idB, cert, point_Kb, aut, tagB)
+	alice.step11(publicPoint)
+	alice.step12
+	alice.step13
+	alice.step14
+	alice.step15
+	alice.step16
+	alice.step17
+	tagA = alice.step18_send
 
-alice.step10(idB, cert, point_Kb, aut, tagB)
-alice.step11(publicPoint)
-alice.step12
-alice.step13
-alice.step14
-alice.step15
-alice.step16
-alice.step17
-tagA = alice.step18_send
+	bob.step19(tagA)
+	bob.step20
+	alice.step20
 
-bob.step19(tagA)
-bob.step20
-alice.step20
+	alice.getKey == bob.getKey ? (puts "Выработанный общий ключ: #{alice.getKey}") : (abort "Ошибка нахождения общего ключа")
+end
 
-alice.getKey == bob.getKey ? (puts "Выработанный общий ключ: #{alice.getKey}") : (abort "Ошибка нахождения общего ключа")
+bench = Benchmark::measure {main}
+puts bench.real
