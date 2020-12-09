@@ -43,9 +43,8 @@ class Bob
         puts "Step 6 (Bob)"
         @idB = idGen
         str = @point_Qab.pi + @idA + @idB
-        @tAB = (Digest::SHA512.hexdigest str).to_i(16).to_s(2)
+        @tAB = (Digest::SHA512.hexdigest str).to_i(16).to_s(2).rjust(512, '0')
         puts "T_AB = #{@tAB}" # 6)
-        puts tAB.length
         puts
     end
 

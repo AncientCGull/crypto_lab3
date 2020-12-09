@@ -78,7 +78,7 @@ class Alice
     def step14()
         puts "Step 14 (Alice)"
         str = @point_Qba.pi + @idA + @idB
-        @tBA = (Digest::SHA512.hexdigest str).to_i(16).to_s(2)
+        @tBA = (Digest::SHA512.hexdigest str).to_i(16).to_s(2).rjust(512, '0')
         puts "T_BA = #{@tBA}"
         puts
     end
